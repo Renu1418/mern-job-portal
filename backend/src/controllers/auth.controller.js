@@ -2,6 +2,8 @@
 import bcrypt from "bcrypt";
 import userModel from "../models/user.model.js";
 import sendVerificationEmail from "../services/emailService.js";
+import jwt from 'jsonwebtoken'
+
 
 
 // register user start
@@ -57,7 +59,8 @@ const registerUser = async (req, res) => {
         //  -now sendEmail() functions pass the data -email,subject,htmlContent 
         //  - and finally Brevo  gets post request and verify all data then send otp to user email
          
-         //to send verification email 
+         
+        //to send verification email 
         try {
             await sendVerificationEmail(email,name,verificationOtp);
 
@@ -66,7 +69,7 @@ const registerUser = async (req, res) => {
             console.error("failed to send verification email:",error);
         }
 
-        res.status(201).json({
+       return res.status(201).json({
             success:true,
             message:"Account created successfully! Please check your email for 6-digit verification code",
             user:{
@@ -76,20 +79,83 @@ const registerUser = async (req, res) => {
                 isVerified:false
 
             }
-        });
-
-        // * register flow-2 start*
+        });    
       }
+        catch (error) {
+             return res.status(500).json({
+             success:false,
+             message:error.message
+             })
+          }
 
-    catch (error) {
-        return res.status(500).json({
-         success:false,
-        message:error.message
-        })
-      }
-
-  }
+    }
   
 // register user end
 
-export default {registerUser};  
+
+//login user start
+const loginUser = async (req,res)=>{
+
+  //try 
+     try {
+    const{email,password} = req.body;
+
+    const user = await userModel.findOne({email});
+
+    if(!user){
+        return res.status(400).json({
+            success:false,
+            message:"Invalid email or password"
+        });
+     }
+
+        if(!user.isVerified){
+            return res.status(401).json({
+                success:false,
+                message: "Please verify your email address before logging in"
+            });
+        }
+
+    const matchPassword = await bcrypt.compare(password,user.password);
+
+     if(!matchPassword){
+        return res.status(400).json({
+            success:false,
+            message: "Invalid email or password"
+        });
+     }
+
+  //to create token
+    const token = jwt.sign({
+        id:user._id,
+        role:user.role
+      },process.env.JWT_SECRET,{expiresIn: "7d"})
+
+     return res.status(200).json({
+        success:true,
+        message: "logged in successfully",
+        token,
+        user:{
+            name:user.name,
+            email:user.email,
+            role:user.role
+        }
+      });
+      
+
+    }
+
+   //catch error
+    catch (error) {
+             return res.status(500).json({
+             success:false,
+             message:error.message
+             })
+          }
+    
+} 
+    
+  
+
+
+export default {registerUser, loginUser};  
