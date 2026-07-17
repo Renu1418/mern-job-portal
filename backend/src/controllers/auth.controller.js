@@ -1,13 +1,13 @@
 
 import bcrypt from "bcrypt";
 import userModel from "../models/user.model.js";
-import sendVerificationEmail from "../services/emailService.js";
+import {sendVerificationEmail, forgotpasswordEmail} from "../services/emailService.js";
 import jwt from 'jsonwebtoken'
 
 
 
 // register user start
-const registerUser = async (req, res) => {
+const register = async (req, res) => {
 
     // * register flow - 1 *
     //      -data(name,enail,password,role) from post request
@@ -94,7 +94,7 @@ const registerUser = async (req, res) => {
 
 
 //login user start
-const loginUser = async (req,res)=>{
+const login = async (req,res)=>{
 
   //try 
      try {
@@ -155,7 +155,170 @@ const loginUser = async (req,res)=>{
     
 } 
     
-  
+  //login user end
 
 
-export default {registerUser, loginUser};  
+
+ //  email verification confirmation through otp start
+
+  const VerifyEmail = async (req,res) => {
+    
+    try {
+        const{email,otp} = req.body;
+
+        if(!email || !otp){
+            return res.status(400).json({
+                success:false,
+                message:"Email and OTP are required"
+            })
+        };
+
+        const user = await userModel.findOne({
+            email,
+            verificationOtp:otp,
+            verificationOtpExpiry:{ $gt: Date.now()}
+        });
+
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid OTP or expire OTP"
+            })
+        }
+       
+        //updating that perticular user verified status,otp and expiry and then save the changed data in databse
+        user.isVerified = true;
+        user.verificationOtp = undefined;
+        user.verificationOtpExpiry = undefined;
+        await user.save();
+
+        res.status(200).json({
+            success :true,
+            message :"Email verified successfully! You can now log in"
+        });
+        
+    } 
+
+   catch (error) {
+             return res.status(500).json({
+             success:false,
+             message:error.message
+             })
+          }
+}
+  //  email verification confirmation through otp - end
+
+
+
+
+
+     //   forgot password code - start
+          
+       //if user forgot the password
+       
+       const forgotpassword = async (req,res)=>{
+        try {
+            const{email} =req.body;
+
+            if(!email){
+                return res.status(400).json({
+                    success:false,
+                    message: "Email is required"
+                });
+            }
+
+            const user = await userModel.findOne({email})
+            if(!user){
+                return res.status(400).json({
+                    success:false,
+                    message: "User with this email not found"
+                });
+            }
+            const resetOTP = Math.floor(100000 + Math.random()*900000).toString();
+            const resetOTPExpiry = Date.now()+10*60*1000 //10min
+
+            user.resetPasswordOtp = resetOTP;
+            user.resetPasswordOtpExpiry = resetOTPExpiry;
+            await user.save();
+
+            try {
+                 await forgotpasswordEmail(email,user.name,resetOTP);
+            } catch (error) {
+                console.error("failed to send reset email:",error);
+            }
+
+            return res.status(200).json({
+               success: true,
+               message: "Reset OTP sent successfully"
+             });
+        } 
+        
+        catch (error) {
+             return res.status(500).json({
+             success:false,
+             message:error.message
+             })
+          }
+       }
+      //if user forgot the password
+      
+      //to reset password - start
+      
+
+      const resetPassword = async (req,res)=>{
+         
+        try {
+
+            const{email,otp,newPassword} = req.body;
+
+        if(!email || !otp || !newPassword){
+            return res.status(400).json({
+                success:false,
+                message: "Email,OTP and Password is required"
+            });
+        }
+        
+        const user = await userModel.findOne({
+            email,
+            resetPasswordOtp:otp,
+            resetPasswordOtpExpiry: {$gt: Date.now()}
+        });
+
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message: "Invalid or Expired otp"
+            })
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword,10);
+        user.password = hashedPassword;
+        user.resetPasswordOtp = undefined;
+        user.resetPasswordOtpExpiry = undefined;
+
+        await user.save();
+
+        res.status(200).json({
+            success:true,
+            message: "Password reset successful! now you can log in with new password."
+        })        
+        } 
+
+        catch (error) {
+            return res.status(500).json({
+            success:false,
+            message:error.message
+            })
+          }
+
+      }
+        
+      
+
+       //  to reset password - end
+
+
+      //   forgot password code - start
+
+export default {register, login, VerifyEmail, forgotpassword, resetPassword };  
+

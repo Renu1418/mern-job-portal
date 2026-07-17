@@ -47,7 +47,7 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
 
 // verification otp send start
 
-//this is how the UI look when user sends verification otp
+//this is how the UI will look,to send otp 
      const otpTemplate = (title, name, otp, message) => `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; text-align: center;">
         <h2 style="color: #4f46e5;">${title}</h2>
@@ -65,7 +65,7 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
 
     
     // To send verification email
-    const sendVerificationEmail = async (email, name, otp) => {
+  export  const sendVerificationEmail = async (email, name, otp) => {
       return sendEmail({
         to:[{email,name}],
         subject:"Your verification code -Job portal",
@@ -77,13 +77,13 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
 //   * register user flow-2 end *
 
 
-// to send forgot password email
-const forgotpassword = async (name,email,otp) =>{
+// to send forgot password email otp
+ export const forgotpasswordEmail = async (email,name,otp) =>{
     return sendEmail({
-        to:{email,name},
+        to:[{email,name}],
         subject:"Reset your password - Job Portal",
-        htmlContent:otpTemplate("Reset your password",name,email,
-            "You requested to resetyour password.Please use the following 6-digit code to proceed"
+        htmlContent:otpTemplate("Reset your password",name,otp,
+            "You requested to reset your password.Please use the following 6-digit code to proceed"
         )
     })
 }
@@ -118,7 +118,3 @@ const forgotpassword = async (name,email,otp) =>{
         })
     }
  
-
-
-
-export default sendVerificationEmail;
