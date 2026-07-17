@@ -24,15 +24,15 @@ const userSchema = new mongoose.Schema({
 
     phone: {
         type: String,
-        required: false
+        default: ""
     },
     resume: {
         type: String,
-        required: false
+        default: ""
     },
     resumePublicId: {
         type: String,
-        default: "",
+        default: ""
     },
     savedJobs: {
         type: [mongoose.Schema.Types.ObjectId],
@@ -52,7 +52,6 @@ const userSchema = new mongoose.Schema({
     },
     verificationOtp: {
         type: String,
-        default: ""
     },
 
     verificationOtpExpiry: {
