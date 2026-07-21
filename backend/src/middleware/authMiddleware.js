@@ -27,7 +27,7 @@ export const authMiddleware = (req, res, next) => {
 
 //to authorize
 
-     export const authorize = (...roles) => {
+export const authorize = (...roles) => {
     return (req, res, next) => {
 
         if (!req.user || !roles.includes(req.user.role)) {

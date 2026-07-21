@@ -90,24 +90,75 @@ const register = async (req, res) => {
 
     }
   
-// register user end
+    // register user end
 
 
-//login user start
-const login = async (req,res)=>{
+   //  email verification confirmation through otp start
 
-  //try 
-     try {
-    const{email,password} = req.body;
+  const VerifyEmail = async (req,res) => {
+    
+    try {
+        const{email,otp} = req.body;
 
-    const user = await userModel.findOne({email});
+        if(!email || !otp){
+            return res.status(400).json({
+                success:false,
+                message:"Email and OTP are required"
+            })
+        };
 
-    if(!user){
+        const user = await userModel.findOne({
+            email,
+            verificationOtp:otp,
+            verificationOtpExpiry:{ $gt: Date.now()}
+        });
+
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message:"Invalid OTP or expire OTP"
+            })
+        }
+       
+        //updating that perticular user verified status,otp and expiry and then save the changed data in databse
+        user.isVerified = true;
+        user.verificationOtp = undefined;
+        user.verificationOtpExpiry = undefined;
+        await user.save();
+
+        res.status(200).json({
+            success :true,
+            message :"Email verified successfully! You can now log in"
+        });
+        
+    } 
+
+   catch (error) {
+             return res.status(500).json({
+             success:false,
+             message:error.message
+             })
+          }
+}
+    //  email verification confirmation through otp - end
+
+
+
+
+   //login user start
+   const login = async (req,res)=>{
+
+    //try 
+      try {
+        const{email,password} = req.body;
+        const user = await userModel.findOne({email});
+
+      if(!user){
         return res.status(400).json({
             success:false,
             message:"Invalid email or password"
         });
-     }
+      }
 
         if(!user.isVerified){
             return res.status(401).json({
@@ -156,60 +207,6 @@ const login = async (req,res)=>{
 } 
     
   //login user end
-
-
-
- //  email verification confirmation through otp start
-
-  const VerifyEmail = async (req,res) => {
-    
-    try {
-        const{email,otp} = req.body;
-
-        if(!email || !otp){
-            return res.status(400).json({
-                success:false,
-                message:"Email and OTP are required"
-            })
-        };
-
-        const user = await userModel.findOne({
-            email,
-            verificationOtp:otp,
-            verificationOtpExpiry:{ $gt: Date.now()}
-        });
-
-        if(!user){
-            return res.status(400).json({
-                success:false,
-                message:"Invalid OTP or expire OTP"
-            })
-        }
-       
-        //updating that perticular user verified status,otp and expiry and then save the changed data in databse
-        user.isVerified = true;
-        user.verificationOtp = undefined;
-        user.verificationOtpExpiry = undefined;
-        await user.save();
-
-        res.status(200).json({
-            success :true,
-            message :"Email verified successfully! You can now log in"
-        });
-        
-    } 
-
-   catch (error) {
-             return res.status(500).json({
-             success:false,
-             message:error.message
-             })
-          }
-}
-  //  email verification confirmation through otp - end
-
-
-
 
 
      //   forgot password code - start
