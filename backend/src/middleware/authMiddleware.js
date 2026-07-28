@@ -1,15 +1,26 @@
 import jwt from "jsonwebtoken"
+import blacklistModel from "../models/blacklistToken.model.js";
 
-export const authMiddleware = (req, res, next) => {
+export const authMiddleware = async (req, res, next) => {
     try {
 
-        const token = req.headers.authorization?.split(" ")[1];
+        const token = req.cookies.token;
 
         if (!token) {
             return res.status(401).json({
+                success:false,
                 message: "No token found"
             });
         }
+
+        const blacklistedToken = await blacklistModel.findOne({token});
+        if(blacklistedToken){
+            return res.status(401).json({
+                success:false,
+                message: "Token has been blacklisted"
+            })
+        }
+
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;

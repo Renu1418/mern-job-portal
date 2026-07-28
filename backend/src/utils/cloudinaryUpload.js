@@ -25,6 +25,9 @@ import cloudinary from "../config/cloudinary.js";
       }
     }
 
+
+      // cloudinary.uploader.upload_stream(options,callback)
+
 const uploadStream = cloudinary.uploader.upload_stream(options,(error, result) => {
         if (error) {
             console.log("Cloudinary Upload Error:", error);

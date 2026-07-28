@@ -1,6 +1,7 @@
 
 import bcrypt from "bcrypt";
 import userModel from "../models/user.model.js";
+import blacklistModel from "../models/blacklistToken.model.js";
 import {sendVerificationEmail, forgotpasswordEmail} from "../utils/emailService.js";
 import jwt from 'jsonwebtoken'
 
@@ -19,7 +20,7 @@ const register = async (req, res) => {
 
     try {
         
-    const {name, email, password,role} = req.body;
+    const {name,email,password,role} = req.body;
     
     // check if user already exists
     const userExist = await userModel.findOne({email});
@@ -30,6 +31,7 @@ const register = async (req, res) => {
         message: "User already exists"
     });
     }
+
     
     // hash password
     const hashPassword = await bcrypt.hash(password, 10);
@@ -182,17 +184,17 @@ const register = async (req, res) => {
         role:user.role
       },process.env.JWT_SECRET,{expiresIn: "7d"})
 
-     return res.status(200).json({
+      res.status(200).cookie("token",token,{maxAge:7*24*60*60*1000,httpOnly:true,secure: process.env.NODE_ENV === "production",sameSite:'strict'}).json({
         success:true,
-        message: "logged in successfully",
-        token,
+        message: "Logged in successfully",
         user:{
             name:user.name,
             email:user.email,
             role:user.role
         }
+        
       });
-      
+
 
     }
 
@@ -317,5 +319,52 @@ const register = async (req, res) => {
 
       //   forgot password code - start
 
-export default {register, login, VerifyEmail, forgotpassword, resetPassword };  
+
+    //   logout user
+
+    const logout = async (req,res) =>{
+
+        try {
+            
+        const token = req.cookies.token;
+
+        if(!token){
+        return res.status(400).json({
+            success:false,
+            message:"User already logged out"
+        });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const blacklistedToken = await blacklistModel.findOne({ token });
+
+          if (!blacklistedToken) {
+            await blacklistModel.create({
+            token,
+            expiresAt: new Date(decoded.exp*1000)
+         });
+        }
+       
+        
+
+        res.clearCookie("token",{
+                 httpOnly: true,
+                 secure: process.env.NODE_ENV === "production",
+                 sameSite: "strict"
+                });
+
+        return res.status(200).json({
+            success:true,
+            message:"Logged out successfully"
+        });
+    }
+    catch (error) {
+            return res.status(500).json({
+                success:false,
+                message:error.message
+            });
+        }
+};
+export default {register, login, VerifyEmail, forgotpassword, resetPassword, logout};  
 

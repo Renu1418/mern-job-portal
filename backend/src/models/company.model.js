@@ -1,22 +1,30 @@
 import mongoose from "mongoose";
 
   const companySchema = new mongoose.Schema({
-    
-    logo:{
+
+    name:{
         type:String,
-        required:true,
+        required:true
+    },   
+    description:{
+        type:String,
     },
     website:{
         type:String,
-        required:true,
     },
-    createdBy:{
+    location:{
+        type:String,
+    },
+    logo:{
+        type:String,
+    },
+    userId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user",
         required:true
     }
    }, {timestamps:true});
 
-  const companyModel = mongoose.model("company",companySchema)
+  const companyModel = mongoose.model("Company",companySchema)
 
   export default companyModel;

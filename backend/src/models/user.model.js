@@ -20,32 +20,28 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+        
     },
 
     phone: {
         type: String,
         default: ""
     },
-    resume: {
-        type: String,
-        default: ""
+    profile:{
+        bio:{type:String},
+        skills:[{type:String}],
+        resume:{type:String},
+        resumeOriginalName:{type:"String"},
+        company:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Company'
+        },
+        profilePhoto:{
+          type:String,
+          default:""
+        }
     },
-    resumePublicId: {
-        type: String,
-        default: ""
-    },
-    savedJobs: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Job'
-    },
-    savedInterviewQuestions: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'InterviewQuestion'
-    },
-    savedRoleQuestions: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'RoleQuestion'
-    },
+    
     isVerified: {
         type: Boolean,
         default: false
