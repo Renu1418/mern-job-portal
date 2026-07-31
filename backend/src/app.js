@@ -5,6 +5,9 @@ import cookieParser from "cookie-parser";
 // imported routes
 import authRoutes from "./routes/auth.routes.js"
 import userRouter from "./routes/user.routes.js";
+import companyRouter from "./routes/company.routes.js";
+import jobRouter from "./routes/job.routes.js";
+import applicationRouter from "./routes/application.routes.js";
 const app = express();
 
 app.use(express.json());
@@ -21,6 +24,9 @@ app.use('/uploads', express.static("uploads"));
 //ROUTES
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRouter)
+app.use('/api/company', companyRouter)
+app.use('/api/job',jobRouter)
+app.use('/api/application', applicationRouter)
 
 export default app;
 
