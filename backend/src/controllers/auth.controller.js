@@ -35,7 +35,7 @@ const register = async (req, res) => {
     
     // hash password
     const hashPassword = await bcrypt.hash(password, 10);
-    const userRole = role ||"user";
+    const userRole = role || "student";
    
       
     //to generate 6-digit otp

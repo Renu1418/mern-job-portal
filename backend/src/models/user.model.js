@@ -11,37 +11,37 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-  
+
     password: {
         type: String,
         required: true
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
-        
+        enum: ["student", "recruiter"],
+        default: "student"
+
     },
 
     phone: {
         type: String,
         default: ""
     },
-    profile:{
-        bio:{type:String},
-        skills:[{type:String}],
-        resume:{type:String},
-        resumeOriginalName:{type:"String"},
-        company:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Company'
+    profile: {
+        bio: { type: String },
+        skills: [{ type: String }],
+        resume: { type: String },
+        resumeOriginalName: { type: "String" },
+        company: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Company'
         },
-        profilePhoto:{
-          type:String,
-          default:""
+        profilePhoto: {
+            type: String,
+            default: ""
         }
     },
-    
+
     isVerified: {
         type: Boolean,
         default: false
@@ -60,8 +60,8 @@ const userSchema = new mongoose.Schema({
         type: Date,
     }
 
-        
-},{timestamps: true});
+
+}, { timestamps: true });
 
 const userModel = mongoose.model('User', userSchema);
 
