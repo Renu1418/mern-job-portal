@@ -5,10 +5,10 @@ import { authMiddleware, authorize } from '../middleware/authMiddleware.js';
 
 const jobRouter = express.Router();
 
-jobRouter.post('/post', authMiddleware, createJob );
+jobRouter.post('/post', authMiddleware,authorize("recruiter") ,createJob );
 jobRouter.get("/get", authMiddleware, getAllJobs);
 jobRouter.get("/get/:id", authMiddleware, getJobById);
-jobRouter.get("/adminJobs", authMiddleware, getAdminjob);
+jobRouter.get("/getadminJobs", authMiddleware, getAdminjob);
 
 
 export default jobRouter;

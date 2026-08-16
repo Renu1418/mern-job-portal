@@ -7,9 +7,11 @@ import { Button } from '../ui/button'
 import { Link } from 'react-router-dom'
 import { toast } from "@/components/ui/toast"
 import axios from 'axios'
-import { USER_API_END_POINT } from "@/utils/constant.js";
+import { AUTH_API_END_POINT } from "@/utils/constant.js";
 import { useNavigate } from 'react-router-dom'
-
+import { useDispatch, useSelector } from 'react-redux';
+import {setLoading} from '../../redux/authSlice.js'
+import { setUser } from '../../redux/authSlice.js'
 
 const Login = () => {
 
@@ -19,6 +21,8 @@ const Login = () => {
   });
 
   const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const {loading} = useSelector((store) => store.auth);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -28,7 +32,8 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+      dispatch(setLoading(true));
+      const res = await axios.post(`${AUTH_API_END_POINT}/login`, input, {
         headers: {
           "Content-Type": "application/json"
         },
@@ -36,6 +41,7 @@ const Login = () => {
       });
 
       if (res.data.success) {
+        dispatch(setUser(res.data.user));
         toast.add({
           title: "Success",
           description: res.data.message,
@@ -53,7 +59,7 @@ const Login = () => {
         description: error.response?.data?.message || "Something went wrong",
         type: "error",
       });
-    }
+    }dispatch(setLoading(false));
   }
 
   return (
@@ -75,9 +81,10 @@ const Login = () => {
             <Label>Password</Label>
             <Input type='password' value={input.password} name="password" onChange={changeEventHandler} placeholder='Sharma' />
           </div>
-
-
-          <Button type="submit" className="w-full my-4">Submit</Button>
+ 
+        {
+          loading ? <Button disabled className="w-full my-4">Loading...</Button> : <Button type="submit" className="w-full my-4">Submit</Button>
+        }
           <span className='text-sm'>Don't have an account? <Link to="/signup" className='text-blue-600'>Signup</Link></span>
         </form>
       </div>

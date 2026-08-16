@@ -7,7 +7,7 @@ const userRouter = express.Router();
 
 userRouter.get("/profile", authMiddleware, getProfile);
 
-userRouter.put("/profile/update",authMiddleware,authorize("student" , "recruiter"), updateProfile);
+userRouter.put("/profile/update",authMiddleware,authorize("student" , "recruiter"), upload.single("file"), updateProfile);
 
 export default userRouter;
 

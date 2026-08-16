@@ -1,6 +1,6 @@
 import userModel from "../models/user.model.js";
-import { uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 import cloudinary from "../config/cloudinary.js";
+import getDataUri from "../utils/datauri.js";
 
 //to user data 
 
@@ -38,6 +38,12 @@ export const updateProfile = async (req,res)=>{
 
   try {
      const{name,email,phone,bio,skills}= req.body;
+     const file = req.file;
+
+    //4  clourdinary 
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
 
      const skillsArray = skills ? skills.split(",") : [];
      const UserId = req.user.id;
@@ -59,6 +65,12 @@ export const updateProfile = async (req,res)=>{
      if(phone) user.phone = phone;
      if(bio) user.profile.bio = bio;
      if(skills) user.profile.skills = skillsArray;
+
+    //#5 cloudinary
+    if(cloudResponse){
+        user.profile.resume = cloudResponse.secure_url; //to save cloudinary url
+        user.profile.resumeOriginalName = file.originalname; //to save file original name
+    }
 
      await user.save();
 

@@ -4,9 +4,9 @@ export const createJob = async (req,res)=>{
 
     try {
  
-    let{title,description,requirements,salary,location,experience,jobType,position,company}=req.body;
+    let{title,description,requirements,salary,location,experience,jobType,position,companyId}=req.body;
     
-    if(!title || !description || !requirements || !salary || !location || !experience || !jobType || !position || !company ){
+    if(!title || !description || !requirements || !salary || !location || !experience || !jobType || !position || !companyId ){
        return res.status(400).json({
         success:false,
         message:"All fields are required"
@@ -15,7 +15,6 @@ export const createJob = async (req,res)=>{
 
     requirements = requirements.split(",");
     const userId = req.user.id;
-    const companyId = company;
 
     const job = await jobModel.create({
         title,
@@ -26,7 +25,7 @@ export const createJob = async (req,res)=>{
         experience,
         jobType,
         position,
-        company:companyId,
+        company: companyId,
         createdBy:userId
 
     })
@@ -92,7 +91,9 @@ export const getJobById = async (req,res)=>{
         const jobId =req.params.id;
 
 
-        const job = await jobModel.findById(jobId);
+        const job = await jobModel.findById(jobId).populate({
+            path:"applications"
+        });
         
         if(!job){
             return res.status(404).json({
@@ -121,7 +122,10 @@ export const getAdminjob = async (req,res)=>{
     try {
         const adminId = req.user.id;
 
-        const jobs = await jobModel.find({createdBy:adminId});
+        const jobs = await jobModel.find({createdBy:adminId}).populate({
+            path:'company',
+            createdAt:-1
+        });
         
         if(!jobs){
             return res.status(404).json({

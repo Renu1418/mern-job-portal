@@ -6,8 +6,10 @@ import { RadioGroup } from "@/components/ui/radio-group"
 import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { USER_API_END_POINT } from "@/utils/constant.js";
+import { AUTH_API_END_POINT } from "@/utils/constant.js";
 import { toast } from "@/components/ui/toast"
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading } from '../../redux/authSlice.js'
 
 const Signup = () => {
 
@@ -19,6 +21,9 @@ const Signup = () => {
   });
 
   const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
+
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -28,7 +33,8 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${USER_API_END_POINT}/register`, input, {
+      dispatch(setLoading(true));
+      const res = await axios.post(`${AUTH_API_END_POINT}/register`, input, {
         headers: {
           "Content-Type": "application/json"
         },
@@ -57,7 +63,7 @@ const Signup = () => {
         description: error.response?.data?.message || "Something went wrong",
         type: "error",
       });
-    }
+    }dispatch(setLoading(false));
   }
 
   return (
@@ -112,7 +118,10 @@ const Signup = () => {
             </RadioGroup>
           </div>
 
-          <Button type="submit" className="w-full my-4">Submit</Button>
+          {
+            loading ? <Button disabled className="w-full my-4">Loading...</Button> : <Button type="submit" className="w-full my-4">Submit</Button>
+          }
+          
           <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
         </form>
       </div>
@@ -121,4 +130,3 @@ const Signup = () => {
 }
 
 export default Signup
- 
