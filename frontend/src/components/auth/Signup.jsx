@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../shared/Navbar'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -22,7 +22,7 @@ const Signup = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const { loading } = useSelector((store) => store.auth);
+  const { loading, user } = useSelector((store) => store.auth);
 
 
   const changeEventHandler = (e) => {
@@ -63,8 +63,14 @@ const Signup = () => {
         description: error.response?.data?.message || "Something went wrong",
         type: "error",
       });
-    }dispatch(setLoading(false));
+    } dispatch(setLoading(false));
   }
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [])
 
   return (
     <div>
@@ -121,7 +127,7 @@ const Signup = () => {
           {
             loading ? <Button disabled className="w-full my-4">Loading...</Button> : <Button type="submit" className="w-full my-4">Submit</Button>
           }
-          
+
           <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
         </form>
       </div>
