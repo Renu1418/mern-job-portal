@@ -28,6 +28,7 @@ const Login = () => {
     setInput({ ...input, [e.target.name]: e.target.value });
   }
 
+  // submit handler - start
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -54,19 +55,34 @@ const Login = () => {
 
     catch (error) {
       console.log(error);
-      toast.add({
-        title: "Error",
-        description: error.response?.data?.message || "Something went wrong",
-        type: "error",
-      });
-    } dispatch(setLoading(false));
-  }
+      // if Unverified user 
+      if (error.response?.data?.message === "Please verify your email address before logging in") {
+
+        navigate("/verify-email", {
+          state: { email: input.email }
+        });
+      }
+      else {
+        toast.add({
+          title: "Error",
+          description: error.response?.data?.message || "Something went wrong",
+          type: "error",
+        });
+      }
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  //  submit handler-end
 
   useEffect(() => {
+    dispatch(setLoading(false));
+
     if (user) {
       navigate("/");
     }
-  }, [])
+  }, [user, navigate, dispatch]);
 
   return (
     <div>
