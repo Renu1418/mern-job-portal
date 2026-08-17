@@ -106,6 +106,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     value={input.name}
                                     onChange={changeEventHandler}
                                     className="col-span-3"
+                                    required
                                 />
                             </div>
 
@@ -118,6 +119,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     value={input.email}
                                     onChange={changeEventHandler}
                                     className="col-span-3"
+                                    required
                                 />
                             </div>
 
@@ -129,6 +131,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     value={input.phone}
                                     onChange={changeEventHandler}
                                     className="col-span-3"
+                                    required
                                 />
                             </div>
 
@@ -140,6 +143,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     value={input.bio}
                                     onChange={changeEventHandler}
                                     className="col-span-3"
+                                    required
                                 />
                             </div>
 
@@ -151,6 +155,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     value={input.skills}
                                     onChange={changeEventHandler}
                                     className="col-span-3"
+                                    required
                                 />
                             </div>
 
@@ -163,6 +168,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     onChange={changeFileHandler}
                                     accept="application/pdf"
                                     className="col-span-3"
+                                    required
                                 />
                             </div>
                         </div>

@@ -98,3 +98,49 @@ export const updateProfile = async (req,res)=>{
         }
 
 }
+
+// to update profile
+
+export const updateProfilePhoto = async (req, res) => {
+    try {
+        const file = req.file;
+
+        if (!file) {
+            return res.status(400).json({
+                success: false,
+                message: "Profile photo is required"
+            });
+        }
+
+        const fileUri = getDataUri(file);
+
+        const cloudResponse = await cloudinary.uploader.upload(
+            fileUri.content
+        );
+
+        const user = await userModel.findById(req.user.id);
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        user.profile.profilePhoto = cloudResponse.secure_url;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile photo updated successfully",
+            profilePhoto: user.profile.profilePhoto
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};

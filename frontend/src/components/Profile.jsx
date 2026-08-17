@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Navbar from './shared/Navbar'
 import { Avatar, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
@@ -7,16 +7,67 @@ import { Badge } from './ui/badge'
 import { Label } from './ui/label'
 import AppliedJobTable from './AppliedJobTable'
 import UpdateProfileDialog from './UpdateProfileDialog'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
+import { USER_API_END_POINT } from '@/utils/constant'
+import axios from 'axios'
+import { setUser } from '@/redux/authSlice'
 
 const skills = ["Html", "CSS", "React", "C++"]
 const isResume = true;
 
 const Profile = () => {
     useGetAppliedJobs();
-    const[open,setOpen] = useState(false);
-    const {user} = useSelector(store=>store.auth);
+
+    const [open, setOpen] = useState(false);
+    const { user } = useSelector(store => store.auth);
+    const dispatch = useDispatch();
+
+    // for profile photo
+    const fileInputRef = useRef(null);
+
+    const profilePhotoHandler = async (e) => {
+        const file = e.target.files?.[0];
+
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await axios.put(
+                `${USER_API_END_POINT}/profile/photo/update`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    withCredentials: true,
+                }
+            );
+            if (res.data.success) {
+                dispatch(setUser({ ...user, profile: { ...user.profile, profilePhoto: res.data.profilePhoto } }));
+            }
+            toast.add({
+                title: "Success",
+                description: res.data.message,
+                type: "success",
+            });
+
+        } catch (error) {
+            console.log(error);
+            toast.add({
+                title: "Error",
+                description: error.response?.data?.message || "Something went wrong",
+                type: "error",
+            });
+        }
+    };
+
+
+
+
+
 
     return (
         <div>
@@ -27,9 +78,23 @@ const Profile = () => {
                 <div className='flex justify-between'>
 
                     <div className='flex items-center gap-4'>
-                        <Avatar className='h-24 w-24'>
-                            <AvatarImage src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" />
-                        </Avatar>
+
+                        <div className='relative'>
+                            <Avatar className='h-24 w-24'>
+                                <AvatarImage src={user?.profile?.profilePhoto} />
+                            </Avatar>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={profilePhotoHandler}
+                                className="hidden"
+                            />
+
+                            <Button onClick={() => fileInputRef.current.click()} variant='secondary' type="button" size="icon" className='absolute bottom-1 right-1 h-7 w-7 rounded-full p-0'>
+                                <Pen size={12} />
+                            </Button>
+                        </div>
 
                         <div>
                             <h1 className='font-medium text-xl text-gray-800'>
@@ -42,7 +107,7 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <Button onClick={()=> setOpen(true)} className='text-right' variant="outline"><Pen /></Button>
+                    <Button onClick={() => setOpen(true)} className='text-right' variant="outline"><Pen /></Button>
 
                 </div>
 
@@ -62,14 +127,14 @@ const Profile = () => {
                     <h1>Skills</h1>
 
                     <div className='flex items-center gap-1'>
-                       {
+                        {
                             user?.profile?.skills?.length > 0
                                 ?
                                 user.profile.skills.map((item, index) => (
                                     <Badge key={index}>
                                         {item}
                                     </Badge>
-                                )) :<span>NA</span>
+                                )) : <span>NA</span>
                         }
                     </div>
                 </div>
@@ -79,7 +144,7 @@ const Profile = () => {
                         Resume
                     </Label>
 
-                 {
+                    {
                         user?.profile?.resume
                             ?
                             (
@@ -91,7 +156,7 @@ const Profile = () => {
                                 >
                                     {user?.profile?.resumeOriginalName}
                                 </a>
-                            ):(<span>NA</span>)
+                            ) : (<span>NA</span>)
                     }
                 </div>
 

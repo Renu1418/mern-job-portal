@@ -108,6 +108,7 @@ const VerifyEmail = () => {
               value={input.otp}
               onChange={changeEventHandler}
               placeholder="Enter OTP"
+              required
             />
           </div>
           {

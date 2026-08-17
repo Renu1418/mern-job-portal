@@ -87,13 +87,13 @@ const Signup = () => {
 
           <div className=' my-4'>
             <Label>Email</Label>
-            <Input type='email' value={input.email} name="email" onChange={changeEventHandler} placeholder='sharma@gmail.com' />
+            <Input type='email' value={input.email} name="email" onChange={changeEventHandler} placeholder='sharma@gmail.com'  required/>
           </div>
 
 
           <div className=' my-4'>
             <Label>Password</Label>
-            <Input type='password' value={input.password} name="password" onChange={changeEventHandler} placeholder='Sharma' />
+            <Input type='password' value={input.password} name="password" onChange={changeEventHandler} placeholder='Sharma'  required/>
           </div>
 
           <div className='flex items-center justify-between mt-5 '>
@@ -106,6 +106,7 @@ const Signup = () => {
                   checked={input.role === 'student'}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
+                  required
                 />
                 <Label htmlFor="student">Student</Label>
               </div>
@@ -118,6 +119,7 @@ const Signup = () => {
                   checked={input.role === 'recruiter'}
                   onChange={changeEventHandler}
                   className="cursor-pointer"
+                  required
                 />
                 <Label htmlFor="recruiter">Recruiter</Label>
               </div>

@@ -96,12 +96,12 @@ const Login = () => {
 
           <div className=' my-4'>
             <Label>Email</Label>
-            <Input type='email' value={input.email} name="email" onChange={changeEventHandler} placeholder='sharma@gmail.com' />
+            <Input type='email' value={input.email} name="email" onChange={changeEventHandler} placeholder='sharma@gmail.com'  required />
           </div>
 
           <div className=' my-4'>
             <Label>Password</Label>
-            <Input type='password' value={input.password} name="password" onChange={changeEventHandler} placeholder='Sharma' />
+            <Input type='password' value={input.password} name="password" onChange={changeEventHandler} placeholder='Sharma'  required/>
 
             <div className="text-right">
               <Link to="/forgot-password" className="text-sm text-blue-600">Forgot Password?</Link>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import useGetSingleJob from '@/hooks/useGetSingleJob.jsx';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSingleJob } from '@/redux/jobSlice';
