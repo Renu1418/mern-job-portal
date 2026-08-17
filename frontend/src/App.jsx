@@ -21,22 +21,25 @@ import StudentProtectedRoute from './components/StudentProtectedRoute'
 
 
 const appRouter = createBrowserRouter([
-  // client site
-  {
-    path: '/',
-    element: <StudentProtectedRoute><Home /></StudentProtectedRoute> 
-  },
+  
+   // Auth routes
   {
     path: "/signup",
-    element: <StudentProtectedRoute><Signup /></StudentProtectedRoute>
+    element: <Signup />
   },
   {
     path: '/login',
-    element: <StudentProtectedRoute><Login /></StudentProtectedRoute>
+    element: <Login />
   },
   {
     path: "/verify-email",
-    element: <StudentProtectedRoute><VerifyEmail /></StudentProtectedRoute>
+    element: <VerifyEmail />
+  },
+   
+  // Student routes
+  {
+    path: '/',
+    element: <StudentProtectedRoute><Home /></StudentProtectedRoute> 
   },
   {
     path: "/jobs",
