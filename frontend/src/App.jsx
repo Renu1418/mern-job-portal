@@ -17,6 +17,8 @@ import PostJob from './components/admin/PostJob'
 import Applicants from './components/admin/Applicants'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 import StudentProtectedRoute from './components/StudentProtectedRoute'
+import ForgotPassword from './components/auth/ForgotPassword'
+import ResetPassword from './components/auth/ResetPassword'
 
 
 
@@ -34,6 +36,14 @@ const appRouter = createBrowserRouter([
   {
     path: "/verify-email",
     element: <VerifyEmail />
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword/>
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword/>
   },
    
   // Student routes

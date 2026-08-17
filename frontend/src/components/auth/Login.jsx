@@ -102,6 +102,10 @@ const Login = () => {
           <div className=' my-4'>
             <Label>Password</Label>
             <Input type='password' value={input.password} name="password" onChange={changeEventHandler} placeholder='Sharma' />
+
+            <div className="text-right">
+              <Link to="/forgot-password" className="text-sm text-blue-600">Forgot Password?</Link>
+            </div>
           </div>
 
           {
