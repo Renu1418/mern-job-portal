@@ -88,33 +88,4 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
     })
 }
 
-  // to send Admin Enquiry start
-
-   // admin enquiry html
-    const AdminTemplate = (data) =>  `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
-            <h2 style="color: #4f46e5;">New Contact Form Submission</h2>
-            <p>You have received a new inquiry from the JobPortal contact form.</p>
-            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                ${['fullName', 'email', 'phone', 'subject', 'message'].map(key => `
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #eeeeee; background: #f9f9f9; width: 30%;"><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong></td>
-                        <td style="padding: 10px; border: 1px solid #eeeeee;">${data[key] || 'N/A'}</td>
-                    </tr>
-                `).join('')}
-            </table>
-            <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
-            <p style="font-size: 12px; color: #888888; text-align: center;">This is an automated notification from JobPortal.</p>
-        </div>
-    `;
-
-    // admin enquiry mail
-        
-    const adminInquiryEmail = (data) =>{
-        return sendEmail({
-            to:[{email:process.env.SENDER_EMAIL}],
-            subject:`Your Inquiry ${data.subject}`,
-            htmlContent: AdminTemplate(data)
-        })
-    }
  

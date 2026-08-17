@@ -89,7 +89,7 @@ const register = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: error.message
-        })
+        });
     }
 
 }
@@ -97,8 +97,8 @@ const register = async (req, res) => {
 // register user end
 
 
-//  email verification confirmation through otp start
-
+//  email verification confirmation through otp,and resend otp - start
+//  verify email
 const VerifyEmail = async (req, res) => {
 
     try {
@@ -144,7 +144,40 @@ const VerifyEmail = async (req, res) => {
         })
     }
 }
-//  email verification confirmation through otp - end
+
+//Resend otp
+const resendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const verificationOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        const verificationOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+        const user = await userModel.findOne({ email });
+
+        user.verificationOtp = verificationOtp;
+        user.verificationOtpExpiry = verificationOtpExpiry;
+
+        await user.save();
+
+        await sendVerificationEmail(email, user.name, verificationOtp);
+
+        return res.status(200).json({
+            success: true,
+            message: "New OTP sent successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+//  email verification confirmation through otp,and resend otp - end
+
 
 
 
@@ -154,7 +187,6 @@ const login = async (req, res) => {
 
     //try 
     try {
-        console.log(req.body);
         const { email, password } = req.body;
         const user = await userModel.findOne({ email });
 
@@ -165,19 +197,20 @@ const login = async (req, res) => {
             });
         }
 
-        if (!user.isVerified) {
-            return res.status(401).json({
-                success: false,
-                message: "Please verify your email address before logging in"
-            });
-        }
-
         const matchPassword = await bcrypt.compare(password, user.password);
 
         if (!matchPassword) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid email or password"
+            });
+        }
+
+
+        if (!user.isVerified) {
+            return res.status(401).json({
+                success: false,
+                message: "Please verify your email address before logging in",
             });
         }
 
@@ -217,7 +250,7 @@ const login = async (req, res) => {
 //login user end
 
 
-//   forgot password code - start
+//   forgot password code and reset password -start
 
 //if user forgot the password
 
@@ -246,11 +279,7 @@ const forgotpassword = async (req, res) => {
         user.resetPasswordOtpExpiry = resetOTPExpiry;
         await user.save();
 
-        try {
-            await forgotpasswordEmail(email, user.name, resetOTP);
-        } catch (error) {
-            console.error("failed to send reset email:", error);
-        }
+        await forgotpasswordEmail(email, user.name, resetOTP);
 
         return res.status(200).json({
             success: true,
@@ -265,11 +294,9 @@ const forgotpassword = async (req, res) => {
         })
     }
 }
-//if user forgot the password
+
 
 //to reset password - start
-
-
 const resetPassword = async (req, res) => {
 
     try {
@@ -317,17 +344,11 @@ const resetPassword = async (req, res) => {
     }
 
 }
+//   forgot password code and reset password -end
 
-
-
-//  to reset password - end
-
-
-//   forgot password code - start
 
 
 //   logout user
-
 const logout = async (req, res) => {
 
     try {
@@ -372,5 +393,5 @@ const logout = async (req, res) => {
         });
     }
 };
-export default { register, login, VerifyEmail, forgotpassword, resetPassword, logout };
+export default { register, login, VerifyEmail, resendOtp, forgotpassword, resetPassword, logout };
 
