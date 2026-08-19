@@ -15,7 +15,7 @@
 //       const resourceType = isImage ? "image" : "raw";
 
         
-//       const uploadResult = await uploadToCloudinary( req.file.buffer,"jobportal/resumes",resourceType,sanitizedFileName );
+//       const uploadResult = await uploadToCloudinary( req.file.buffer,"JobStack/resumes",resourceType,sanitizedFileName );
      
 
 

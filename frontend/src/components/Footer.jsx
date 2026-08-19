@@ -8,7 +8,7 @@ const Footer = () => {
         {/* Left */}
         <div>
           <h1 className="text-2xl font-bold">
-            Job<span className="text-[#6A38C2]">Portal</span>
+            Job<span className="text-[#6A38C2]">Stack</span>
           </h1>
           <p className="text-sm text-gray-600 mt-1 max-w-md">
             Connecting talented people with their dream careers.
@@ -21,7 +21,7 @@ const Footer = () => {
             Build Your Career 🚀
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            © {new Date().getFullYear()} JobPortal. All rights reserved.
+            © {new Date().getFullYear()} JobStack. All rights reserved.
           </p>
         </div>
 

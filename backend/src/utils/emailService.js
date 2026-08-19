@@ -21,7 +21,7 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
                 "accept": "application/json"
             },
             body:JSON.stringify({
-                sender:{name:"Job Portal",email:senderEmail},
+                sender:{name:"Job Stack",email:senderEmail},
                 to,
                 subject,
                 htmlContent
@@ -59,7 +59,7 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
         <p>This code will expire in 10 minutes.</p>
         <p>If you did not request this, please ignore this email.</p>
         <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
-        <p style="font-size: 12px; color: #888888;">&copy; 2026 JobPortal. All rights reserved.</p>
+        <p style="font-size: 12px; color: #888888;">&copy; 2026 JobStack. All rights reserved.</p>
     </div>
     `;
 
@@ -68,7 +68,7 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
   export  const sendVerificationEmail = async (email, name, otp) => {
       return sendEmail({
         to:[{email,name}],
-        subject:"Your verification code -Job portal",
+        subject:"Your verification code -Job Stack",
         htmlContent:otpTemplate("Verify your email",name,otp,
             "Thank you for signing up.please enter your 6-digit code to verify your email address")
       })
@@ -81,7 +81,7 @@ const sendEmail =  async ({to,subject,htmlContent}) =>{
  export const forgotpasswordEmail = async (email,name,otp) =>{
     return sendEmail({
         to:[{email,name}],
-        subject:"Reset your password - Job Portal",
+        subject:"Reset your password - Job Stack",
         htmlContent:otpTemplate("Reset your password",name,otp,
             "You requested to reset your password.Please use the following 6-digit code to proceed"
         )
