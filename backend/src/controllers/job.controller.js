@@ -149,6 +149,85 @@ export const getAdminjob = async (req,res)=>{
         }
 }
 
+// update job by Id
+// update job by Id
+
+export const updateJob = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const recruiterId = req.user.id;
+
+        let {
+            title,
+            description,
+            requirements,
+            salary,
+            location,
+            experience,
+            jobType,
+            position
+        } = req.body;
+
+        if (
+            !title ||
+            !description ||
+            !requirements ||
+            !salary ||
+            !location ||
+            !experience ||
+            !jobType ||
+            !position
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required"
+            });
+        }
+
+        const job = await jobModel.findById(jobId);
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: "Job not found"
+            });
+        }
+
+        // Sirf jis recruiter ne job create ki hai wahi update kar sakta hai
+        if (job.createdBy.toString() !== recruiterId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to update this job"
+            });
+        }
+
+        requirements = requirements.split(",");
+
+        job.title = title;
+        job.description = description;
+        job.requirements = requirements;
+        job.salary = salary;
+        job.location = location;
+        job.experience = experience;
+        job.jobType = jobType;
+        job.position = position;
+
+        await job.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Job updated successfully",
+            job
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 
 // delete job by Id
 

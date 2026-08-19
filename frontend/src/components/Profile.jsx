@@ -14,8 +14,6 @@ import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
 // import { setUser } from '@/redux/authSlice'
 import useUpdateProfilePhoto from '@/hooks/useUpdateProfilePhoto'
 
-const skills = ["Html", "CSS", "React", "C++"]
-const isResume = true;
 
 const Profile = () => {
     useGetAppliedJobs();

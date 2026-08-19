@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { createJob, getAllJobs, getJobById, getAdminjob, deleteJob } from '../controllers/job.controller.js';
+import { createJob, getAllJobs, getJobById, getAdminjob, deleteJob, updateJob } from '../controllers/job.controller.js';
 import { authMiddleware, authorize } from '../middleware/authMiddleware.js';
 
 const jobRouter = express.Router();
@@ -9,6 +9,7 @@ jobRouter.post('/post', authMiddleware,authorize("recruiter") ,createJob );
 jobRouter.get("/get", authMiddleware, getAllJobs);
 jobRouter.get("/get/:id", authMiddleware, getJobById);
 jobRouter.get("/getadminJobs", authMiddleware, getAdminjob);
+jobRouter.put("/update/:id",authMiddleware,authorize("recruiter"),updateJob);
 jobRouter.delete("/delete/:id",authMiddleware, authorize("recruiter"),deleteJob);
 
 
