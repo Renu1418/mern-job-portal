@@ -1,233 +1,419 @@
-import React, { useEffect, useState } from 'react'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import { Avatar, AvatarImage } from '../ui/avatar'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog'
-import { Edit2, MoreHorizontal, Trash2 } from 'lucide-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { Button } from '../ui/button'
-import axios from 'axios'
-import { COMPANY_API_END_POINT } from '@/utils/constant'
-import { setCompanies } from '@/redux/companySlice'
-import { toast } from '../ui/toast'
+// new ui
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import {
+  Building2,
+  CalendarDays,
+  Edit2,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { COMPANY_API_END_POINT } from "@/utils/constant";
+import { setCompanies } from "@/redux/companySlice";
+import { toast } from "../ui/toast";
 
 const CompaniesTable = () => {
+  const { companies, searchCompanyByText } = useSelector(
+    (store) => store.company
+  );
 
-    const { companies, searchCompanyByText } = useSelector(store => store.company)
-    const [filterCompnay, setFilterCompany] = useState();
-    const navigate = useNavigate();
+  const [filterCompany, setFilterCompany] = useState([]);
 
-    const dispatch = useDispatch();
-    const [selectedCompany, setSelectedCompany] = useState(null);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        const filteredCompany = companies.length >= 0 && companies.filter((company) => {
-            if (!searchCompanyByText) {
-                return true;
-            };
-            return company?.name?.toLowerCase().includes(searchCompanyByText.toLowerCase());
-        });
-        setFilterCompany(filteredCompany);
-    }, [companies, searchCompanyByText]);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
- // delete company handler and Dialog handle
-    const handleDeleteClick = (company) => {
-        setSelectedCompany(company);
-        setOpenDeleteDialog(true);
-    };
+  useEffect(() => {
+    const filteredCompany = companies.filter((company) => {
+      if (!searchCompanyByText) {
+        return true;
+      }
 
-    const deleteCompanyHandler = async () => {
-        if (!selectedCompany) return;
+      return company?.name
+        ?.toLowerCase()
+        .includes(searchCompanyByText.toLowerCase());
+    });
 
-        try {
-            const res = await axios.delete(
-                `${COMPANY_API_END_POINT}/delete/${selectedCompany._id}`,
-                {
-                    withCredentials: true
-                }
-            );
+    setFilterCompany(filteredCompany);
+  }, [companies, searchCompanyByText]);
 
-            if (res.data.success) {
-                const updatedCompanies = companies.filter(
-                    (company) => company._id !== selectedCompany._id
-                );
+  // Delete company dialog
+  const handleDeleteClick = (company) => {
+    setSelectedCompany(company);
+    setOpenDeleteDialog(true);
+  };
 
-                dispatch(setCompanies(updatedCompanies));
+  // Delete company
+  const deleteCompanyHandler = async () => {
+    if (!selectedCompany) return;
 
-                toast.add({
-                    title: "Success",
-                    description: res.data.message,
-                    type: "success",
-                });
-
-                setOpenDeleteDialog(false);
-                setSelectedCompany(null);
-            }
-
-        } catch (error) {
-            console.log(error);
-
-            toast.add({
-                title: "Error",
-                description:
-                    error.response?.data?.message ||
-                    "Something went wrong",
-                type: "error",
-            });
+    try {
+      const res = await axios.delete(
+        `${COMPANY_API_END_POINT}/delete/${selectedCompany._id}`,
+        {
+          withCredentials: true,
         }
-    };
+      );
 
-    return (
-        <div>
-            <Table>
+      if (res.data.success) {
+        const updatedCompanies = companies.filter(
+          (company) => company._id !== selectedCompany._id
+        );
 
-                <TableCaption>
-                    A list of your recent registered companies
-                </TableCaption>
+        dispatch(setCompanies(updatedCompanies));
 
-                {/* Table Header */}
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Logo</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Action</TableHead>
-                    </TableRow>
-                </TableHeader>
+        toast.add({
+          title: "Company Deleted",
+          description: res.data.message,
+          type: "success",
+        });
 
+        setOpenDeleteDialog(false);
+        setSelectedCompany(null);
+      }
+    } catch (error) {
+      console.log(error);
 
-                {/* Table Body */}
-                <TableBody>
+      toast.add({
+        title: "Delete Failed",
+        description:
+          error.response?.data?.message ||
+          "Something went wrong",
+        type: "error",
+      });
+    }
+  };
 
-                    {
-                        filterCompnay?.length <= 0 ? (
+  return (
+    <>
+      <div className="overflow-x-auto">
 
-                            <TableRow>
-                                <TableCell
-                                    colSpan={4}
-                                    className="text-center"
-                                >
-                                    You haven't registered any company yet.
-                                </TableCell>
-                            </TableRow>
+        <Table>
 
-                        ) : (
+          {/* Header */}
+          <TableHeader>
+            <TableRow className="border-slate-100 hover:bg-transparent">
 
-                            filterCompnay?.map((company) => {
+              <TableHead className="h-12 px-4 text-xs font-semibold text-slate-400">
+                Company
+              </TableHead>
 
-                                return (
+              <TableHead className="h-12 px-4 text-xs font-semibold text-slate-400">
+                Registered On
+              </TableHead>
 
-                                    <TableRow key={company._id}>
+              <TableHead className="h-12 px-4 text-right text-xs font-semibold text-slate-400">
+                Actions
+              </TableHead>
 
-                                        {/* Logo */}
-                                        <TableCell>
-                                            <Avatar>
-                                                <AvatarImage
-                                                    src={company.logo}
-                                                />
-                                            </Avatar>
-                                        </TableCell>
+            </TableRow>
+          </TableHeader>
 
+          {/* Body */}
+          <TableBody>
 
-                                        {/* Company Name */}
-                                        <TableCell>
-                                            {company.name}
-                                        </TableCell>
+            {filterCompany?.length === 0 ? (
 
+              <TableRow>
 
-                                        {/* Date */}
-                                        <TableCell>
-                                            {company.createdAt?.split("T")[0]}
-                                        </TableCell>
+                <TableCell
+                  colSpan={3}
+                  className="h-64 text-center"
+                >
 
+                  <div className="flex flex-col items-center justify-center">
 
-                                        {/* Action */}
-                                        <TableCell className="text-right">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-400">
+                      <Building2 className="h-6 w-6" />
+                    </div>
 
-                                            <Popover>
+                    <h3 className="mt-4 text-sm font-semibold text-slate-700">
+                      No companies found
+                    </h3>
 
-                                                <PopoverTrigger className="cursor-pointer">
-                                                    <MoreHorizontal />
-                                                </PopoverTrigger>
+                    <p className="mt-1 text-xs text-slate-400">
+                      Register a company to start posting jobs.
+                    </p>
 
-                                                <PopoverContent className="w-32">
+                  </div>
 
-                                                    <div onClick={() => navigate(`/admin/companies/${company._id}`)} className="flex items-center gap-2 w-fit cursor-pointer">
+                </TableCell>
 
-                                                        <Edit2 className="w-4 h-4" />
+              </TableRow>
 
-                                                        <span>
-                                                            Edit
-                                                        </span>
+            ) : (
 
-                                                    </div>
+              filterCompany?.map((company) => (
 
-                                                    <div
-                                                        onClick={() => handleDeleteClick(company)}
-                                                        className="flex items-center gap-2 w-fit cursor-pointer mt-2 text-red-500"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                        <span>Delete</span>
-                                                    </div>
+                <TableRow
+                  key={company._id}
+                  className="
+                    border-slate-100
+                    transition-colors
+                    hover:bg-slate-50/70
+                  "
+                >
 
-                                                </PopoverContent>
+                  {/* Company */}
+                  <TableCell className="px-4 py-4">
 
-                                            </Popover>
+                    <div className="flex items-center gap-3">
 
-                                        </TableCell>
+                      <Avatar className="h-10 w-10 rounded-xl border border-slate-100">
 
-                                    </TableRow>
+                        <AvatarImage
+                          src={company.logo}
+                          alt={company.name}
+                          className="object-cover"
+                        />
 
-                                )
-                            })
-                        )
-                    }
+                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-blue-50 to-violet-100 text-sm font-bold text-violet-600">
+                          {company?.name
+                            ?.charAt(0)
+                            ?.toUpperCase() || "C"}
+                        </AvatarFallback>
 
-                </TableBody>
+                      </Avatar>
 
-            </Table>
+                      <div className="min-w-0">
 
-            <Dialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-            >
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Delete Company?</DialogTitle>
+                        <p className="truncate text-sm font-semibold text-slate-800">
+                          {company.name}
+                        </p>
 
-                        <DialogDescription>
-                            Are you sure you want to delete{" "}
-                            <span className="font-semibold text-black">
-                                {selectedCompany?.name}
-                            </span>
-                            ? This action cannot be undone.
-                        </DialogDescription>
-                    </DialogHeader>
+                        <p className="mt-0.5 text-xs text-slate-400">
+                          Registered company
+                        </p>
 
-                    <DialogFooter>
+                      </div>
+
+                    </div>
+
+                  </TableCell>
+
+                  {/* Date */}
+                  <TableCell className="px-4 py-4">
+
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+
+                      <CalendarDays className="h-4 w-4 text-blue-500" />
+
+                      <span>
+                        {company.createdAt?.split("T")[0]}
+                      </span>
+
+                    </div>
+
+                  </TableCell>
+
+                  {/* Actions */}
+                  <TableCell className="px-4 py-4 text-right">
+
+                    <Popover>
+
+                      <PopoverTrigger asChild>
+
                         <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpenDeleteDialog(false)}
+                          variant="ghost"
+                          size="icon"
+                          className="
+                            h-9 w-9 rounded-lg
+                            text-slate-400
+                            hover:bg-blue-50
+                            hover:text-blue-600
+                          "
                         >
-                            Cancel
+                          <MoreHorizontal className="h-5 w-5" />
                         </Button>
 
-                        <Button
-                            type="button"
-                            variant="destructive"
-                            onClick={deleteCompanyHandler}
+                      </PopoverTrigger>
+
+                      <PopoverContent
+                        align="end"
+                        className="
+                          w-36 rounded-xl
+                          border-slate-200
+                          p-1.5
+                          shadow-lg
+                        "
+                      >
+
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/admin/companies/${company._id}`
+                            )
+                          }
+                          className="
+                            flex w-full items-center gap-2
+                            rounded-lg px-3 py-2
+                            text-left text-sm text-slate-600
+                            transition-colors
+                            hover:bg-blue-50
+                            hover:text-blue-600
+                          "
                         >
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                          <Edit2 className="h-4 w-4" />
 
-        </div>
-    )
-}
+                          Edit
+                        </button>
 
-export default CompaniesTable
+                        <button
+                          onClick={() =>
+                            handleDeleteClick(company)
+                          }
+                          className="
+                            mt-1 flex w-full items-center gap-2
+                            rounded-lg px-3 py-2
+                            text-left text-sm text-red-500
+                            transition-colors
+                            hover:bg-red-50
+                          "
+                        >
+                          <Trash2 className="h-4 w-4" />
+
+                          Delete
+                        </button>
+
+                      </PopoverContent>
+
+                    </Popover>
+
+                  </TableCell>
+
+                </TableRow>
+
+              ))
+
+            )}
+
+          </TableBody>
+
+        </Table>
+
+      </div>
+
+      {/* Delete Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onOpenChange={setOpenDeleteDialog}
+      >
+
+        <DialogContent
+          className="
+            w-[calc(100%-2rem)]
+            max-w-md
+            overflow-hidden
+            rounded-3xl
+            border border-slate-200
+            bg-white
+            p-0
+            shadow-2xl
+          "
+        >
+
+          {/* Accent */}
+          <div className="h-1.5 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400" />
+
+          <div className="p-6 sm:p-7">
+
+            <DialogHeader>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+                <Trash2 className="h-5 w-5" />
+              </div>
+
+              <DialogTitle className="mt-4 text-xl font-bold text-slate-900">
+                Delete Company?
+              </DialogTitle>
+
+              <DialogDescription className="pt-1 text-sm leading-6 text-slate-500">
+
+                Are you sure you want to delete{" "}
+
+                <span className="font-semibold text-slate-800">
+                  {selectedCompany?.name}
+                </span>
+
+                ? This action cannot be undone.
+
+              </DialogDescription>
+
+            </DialogHeader>
+
+            <DialogFooter className="mt-6 gap-2 sm:gap-3">
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpenDeleteDialog(false)}
+                className="
+                  rounded-xl
+                  border-slate-200
+                  px-5
+                  text-slate-600
+                  hover:bg-slate-50
+                "
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="button"
+                onClick={deleteCompanyHandler}
+                className="
+                  rounded-xl
+                  bg-red-500
+                  px-5
+                  font-semibold text-white
+                  hover:bg-red-600
+                "
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+
+                Delete Company
+              </Button>
+
+            </DialogFooter>
+
+          </div>
+
+        </DialogContent>
+
+      </Dialog>
+    </>
+  );
+};
+
+export default CompaniesTable;
