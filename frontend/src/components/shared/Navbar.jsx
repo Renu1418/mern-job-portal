@@ -28,6 +28,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { fileInputRef, profilePhotoHandler } = useUpdateProfilePhoto();
 
+  const userInitials = user?.name?.split(" ").map((name) => name[0]).join("").toUpperCase();
+
   const logoutHandler = async (e) => {
     console.log("🔥 LOGOUT CLICKED");
     try {
@@ -99,7 +101,7 @@ const Navbar = () => {
               <PopoverTrigger >
                 <Avatar className="cursor-pointer">
                   <AvatarImage src={user?.profile?.profilePhoto} />
-                  <AvatarFallback>RS</AvatarFallback>
+                  <AvatarFallback>{userInitials}</AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
 
@@ -112,7 +114,7 @@ const Navbar = () => {
                      <div className="relative">
                     <Avatar>
                       <AvatarImage src={user?.profile?.profilePhoto} />
-                      <AvatarFallback>RS</AvatarFallback>
+                      <AvatarFallback>{userInitials}</AvatarFallback>
                     </Avatar>
 
                     {/* Sirf recruiter ke liye photo update */}

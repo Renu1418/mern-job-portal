@@ -14,6 +14,17 @@ const Jobs = () => {
     useEffect(() => {
         if (searchedQuery) {
             const filteredJobs = allJobs.filter((job) => {
+                const salary = parseInt(job.salary.match(/\d+/)?.[0]);
+
+                if (searchedQuery === "Below ₹5 LPA") {
+                    return salary < 5;
+                }
+                else if (searchedQuery === "₹5 - ₹10 LPA") {
+                    return salary >= 5 && salary <= 10;
+                }
+                else if (searchedQuery === "Above ₹10 LPA") {
+                    return salary > 10;
+                }
                 return job.title.toLowerCase().includes(searchedQuery.toLowerCase()) ||
                     job.description.toLowerCase().includes(searchedQuery.toLowerCase()) ||
                     job.location.toLowerCase().includes(searchedQuery.toLowerCase())

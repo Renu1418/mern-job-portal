@@ -16,7 +16,7 @@ const filterData = [
   },
   {
     filterType: "Salary",
-    array: ["0-40k", "42-1lakh", "1lakh to 5lakh"]
+    array: ["Below ₹5 LPA", "₹5 - ₹10 LPA", "Above ₹10 LPA"]
   },
 ]
 
