@@ -1,6 +1,8 @@
 import companyModel from "../models/company.model.js";
 import cloudinary from "../config/cloudinary.js";
 import getDataUri from "../utils/datauri.js";
+import jobModel from "../models/job.model.js";
+import applicationModel from "../models/application.model.js";
 
 // Add company
 export const addCompany = async (req, res) => {
@@ -136,3 +138,62 @@ export const updateCompany = async (req, res) => {
         });
     }
 }
+
+// delete company
+export const deleteCompany = async (req, res) => {
+    try {
+        const companyId = req.params.id;
+        const userId = req.user.id;
+
+        // Find company
+        const company = await companyModel.findById(companyId);
+
+        if (!company) {
+            return res.status(404).json({
+                success: false,
+                message: "Company not found"
+            });
+        }
+
+        // Check ownership
+        if (company.userId.toString() !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to delete this company"
+            });
+        }
+
+        // Find all jobs related to this company
+        const jobs = await jobModel.find({
+            company: companyId
+        });
+
+        const jobIds = jobs.map((job) => job._id);
+
+        // Delete all applications related to those jobs
+        if (jobIds.length > 0) {
+            await applicationModel.deleteMany({
+                job: { $in: jobIds }
+            });
+
+            // Delete all jobs related to company
+            await jobModel.deleteMany({
+                company: companyId
+            });
+        }
+
+        // Finally delete company
+        await companyModel.findByIdAndDelete(companyId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Company and all related jobs deleted successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};

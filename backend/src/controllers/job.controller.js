@@ -1,4 +1,5 @@
 import jobModel from "../models/job.model.js";
+import applicationModel from "../models/application.model.js";
 
 export const createJob = async (req,res)=>{
 
@@ -147,3 +148,49 @@ export const getAdminjob = async (req,res)=>{
             });
         }
 }
+
+
+// delete job by Id
+
+export const deleteJob = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const recruiterId = req.user.id;
+
+        const job = await jobModel.findById(jobId);
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: "Job not found"
+            });
+        }
+
+        // Sirf jis recruiter ne job create ki hai wahi delete kar sakta hai
+        if (job.createdBy.toString() !== recruiterId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to delete this job"
+            });
+        }
+
+        // Delete all applications related to this job
+        await applicationModel.deleteMany({
+            job: jobId
+        });
+
+        // Delete the job
+        await jobModel.findByIdAndDelete(jobId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Job and related applications deleted successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};

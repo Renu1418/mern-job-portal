@@ -10,13 +10,14 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import { User2, LogOut } from "lucide-react";
+import { User2, LogOut, Pen } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "../ui/toast"
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { AUTH_API_END_POINT } from "@/utils/constant";
 import { setUser } from "@/redux/authSlice";
+import useUpdateProfilePhoto from "@/hooks/useUpdateProfilePhoto";
 
 
 const Navbar = () => {
@@ -25,6 +26,7 @@ const Navbar = () => {
   const { user } = useSelector(store => store.auth);
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const { fileInputRef, profilePhotoHandler } = useUpdateProfilePhoto();
 
   const logoutHandler = async (e) => {
     console.log("🔥 LOGOUT CLICKED");
@@ -103,12 +105,39 @@ const Navbar = () => {
 
               <PopoverContent className="w-80">
                 <div className="space-y-4">
+
                   {/* User Info */}
                   <div className="flex items-center gap-3">
+
+                     <div className="relative">
                     <Avatar>
                       <AvatarImage src={user?.profile?.profilePhoto} />
                       <AvatarFallback>RS</AvatarFallback>
                     </Avatar>
+
+                    {/* Sirf recruiter ke liye photo update */}
+                    {user?.role === "recruiter" && (
+                      <>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          onChange={profilePhotoHandler}
+                          className="hidden"
+                        />
+
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="secondary"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-white border shadow-sm p-0 hover:bg-gray-100"
+                        >
+                          <Pen size={8} />
+                        </Button>
+                      </>
+                    )}
+                    </div>
 
                     <div>
                       <h4 className="font-medium">{user?.name}</h4>

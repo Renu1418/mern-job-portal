@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, {  useState } from 'react'
 import Navbar from './shared/Navbar'
 import { Avatar, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
@@ -9,9 +9,10 @@ import AppliedJobTable from './AppliedJobTable'
 import UpdateProfileDialog from './UpdateProfileDialog'
 import { useDispatch, useSelector } from 'react-redux'
 import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
-import { USER_API_END_POINT } from '@/utils/constant'
-import axios from 'axios'
-import { setUser } from '@/redux/authSlice'
+// import { USER_API_END_POINT } from '@/utils/constant'
+// import axios from 'axios'
+// import { setUser } from '@/redux/authSlice'
+import useUpdateProfilePhoto from '@/hooks/useUpdateProfilePhoto'
 
 const skills = ["Html", "CSS", "React", "C++"]
 const isResume = true;
@@ -22,51 +23,7 @@ const Profile = () => {
     const [open, setOpen] = useState(false);
     const { user } = useSelector(store => store.auth);
     const dispatch = useDispatch();
-
-    // for profile photo
-    const fileInputRef = useRef(null);
-
-    const profilePhotoHandler = async (e) => {
-        const file = e.target.files?.[0];
-
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-            const res = await axios.put(
-                `${USER_API_END_POINT}/profile/photo/update`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    withCredentials: true,
-                }
-            );
-            if (res.data.success) {
-                dispatch(setUser({ ...user, profile: { ...user.profile, profilePhoto: res.data.profilePhoto } }));
-            }
-            toast.add({
-                title: "Success",
-                description: res.data.message,
-                type: "success",
-            });
-
-        } catch (error) {
-            console.log(error);
-            toast.add({
-                title: "Error",
-                description: error.response?.data?.message || "Something went wrong",
-                type: "error",
-            });
-        }
-    };
-
-
-
-
+    const { fileInputRef, profilePhotoHandler } = useUpdateProfilePhoto();
 
 
     return (
