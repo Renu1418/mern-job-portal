@@ -149,11 +149,10 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                  isActive
+                className={`relative flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${isActive
                     ? "bg-violet-50 text-violet-700"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
-                }`}
+                  }`}
               >
                 <Icon className="h-4 w-4" />
                 {item.name}
@@ -188,15 +187,22 @@ const Navbar = () => {
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <button className="group flex items-center gap-2 rounded-xl p-1.5 transition-colors hover:bg-slate-100">
-                  <Avatar className="h-9 w-9 ring-2 ring-transparent transition-all group-hover:ring-violet-200">
-                    <AvatarImage
-                      src={user?.profile?.profilePhoto}
-                    />
-                    <AvatarFallback className="bg-violet-100 font-semibold text-violet-700">
-                      {userInitials}
-                    </AvatarFallback>
-                  </Avatar>
+                <button className="group relative rounded-full p-1 transition-all duration-300 hover:bg-violet-50">
+                  <div className="rounded-full bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-500 p-[2px] shadow-md shadow-violet-200 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-violet-300">
+                    <Avatar className="h-10 w-10 border-2 border-white">
+                      <AvatarImage
+                        src={user?.profile?.profilePhoto}
+                        className="object-cover"
+                      />
+
+                      <AvatarFallback className="bg-gradient-to-br from-violet-100 to-indigo-100 font-bold text-violet-700">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+
+                  {/* Online Indicator */}
+                  <span className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500" />
                 </button>
               </PopoverTrigger>
 
@@ -208,16 +214,14 @@ const Navbar = () => {
                 <div className="flex items-center gap-3 rounded-xl p-3">
                   <div className="relative">
                     <Avatar className="h-11 w-11">
-                      <AvatarImage
-                        src={user?.profile?.profilePhoto}
-                      />
+                      <AvatarImage src={user?.profile?.profilePhoto} />
 
                       <AvatarFallback className="bg-violet-100 font-semibold text-violet-700">
                         {userInitials}
                       </AvatarFallback>
                     </Avatar>
 
-                    {/* Recruiter photo update */}
+                    {/* Recruiter Photo Update */}
                     {user?.role === "recruiter" && (
                       <>
                         <input
@@ -232,9 +236,7 @@ const Navbar = () => {
                           type="button"
                           size="icon"
                           variant="secondary"
-                          onClick={() =>
-                            fileInputRef.current?.click()
-                          }
+                          onClick={() => fileInputRef.current?.click()}
                           className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border bg-white p-0 shadow-sm hover:bg-slate-100"
                         >
                           <Pen size={9} />
@@ -322,11 +324,10 @@ const Navbar = () => {
                   key={item.path}
                   to={item.path}
                   onClick={handleNavClick}
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-                    isActive
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${isActive
                       ? "bg-violet-50 text-violet-700"
                       : "text-slate-700 hover:bg-slate-50"
-                  }`}
+                    }`}
                 >
                   <Icon className="h-4 w-4" />
                   {item.name}

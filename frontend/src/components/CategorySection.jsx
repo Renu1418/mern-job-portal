@@ -29,7 +29,7 @@ const category = [
     description: "Build powerful server systems",
   },
   {
-    name: "Fullstack",
+    name: "Full stack",
     icon: Layers3,
     description: "Work across the entire stack",
   },

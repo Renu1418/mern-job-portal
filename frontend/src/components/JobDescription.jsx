@@ -163,7 +163,7 @@ const JobDescription = () => {
         </div>
 
         {/* Job Content */}
-        <div className="mt-6 grid items-stretch gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_320px]">
 
           {/* Left Content */}
           <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
@@ -243,12 +243,31 @@ const JobDescription = () => {
                   </span>
                 </div>
 
+                {/* Requirements / Skills */}
+                <div className="flex flex-col gap-2 py-4">
+                  <span className="text-sm font-semibold text-slate-500">
+                    Requirements
+                  </span>
+
+                  <div className="flex flex-wrap gap-2">
+                    {singleJob?.requirements?.flat()?.map((requirement, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="rounded-lg border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700"
+                      >
+                        {requirement.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             </section>
           </div>
 
           {/* Right Sidebar */}
-          <div className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
 
             <h2 className="text-lg font-bold text-slate-900">
               Job Overview
@@ -330,11 +349,10 @@ const JobDescription = () => {
               <Button
                 onClick={isApplied ? null : applyJobHandler}
                 disabled={isApplied}
-                className={`w-full rounded-xl font-semibold transition-all ${
-                  isApplied
+                className={`w-full rounded-xl font-semibold transition-all ${isApplied
                     ? "cursor-not-allowed bg-slate-200 text-slate-500 hover:bg-slate-200"
                     : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md"
-                }`}
+                  }`}
               >
                 {isApplied ? "Already Applied" : "Apply Now"}
               </Button>
