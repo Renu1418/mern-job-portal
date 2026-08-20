@@ -1,4 +1,3 @@
-// new ui
 import React, { useState } from "react";
 import {
   Dialog,

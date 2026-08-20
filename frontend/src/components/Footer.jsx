@@ -1,5 +1,3 @@
-
-// new ui 
 import React from "react";
 import { ArrowUpRight, BriefcaseBusiness } from "lucide-react";
 

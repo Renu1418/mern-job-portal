@@ -1,5 +1,3 @@
-// new ui
-// new ui
 import React from "react";
 import {
   MapPin,
