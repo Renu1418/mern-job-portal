@@ -9,38 +9,51 @@ import { SearchX, SlidersHorizontal } from "lucide-react";
 const Jobs = () => {
   const { allJobs, searchedQuery } = useSelector((store) => store.job);
   const [filterJobs, setFilterJobs] = useState(allJobs);
-
+  const [selectedFilter, setSelectedFilter] = useState("");
+  
   useEffect(() => {
-    if (searchedQuery) {
-      const filteredJobs = allJobs.filter((job) => {
-        const salary = parseInt(job.salary.match(/\d+/)?.[0]);
+    if (!selectedFilter) {
+        setFilterJobs(allJobs);
+        return;
+    }
 
-        if (searchedQuery === "Below ₹5 LPA") {
-          return salary < 5;
-        } else if (searchedQuery === "₹5 - ₹10 LPA") {
-          return salary >= 5 && salary <= 10;
-        } else if (searchedQuery === "Above ₹10 LPA") {
-          return salary > 10;
+    const filteredJobs = allJobs.filter((job) => {
+        const salary = parseInt(job.salary?.match(/\d+/)?.[0] || 0);
+
+        if (selectedFilter === "Below ₹5 LPA") {
+            return salary < 5;
         }
 
-        return (
-          job.title
-            .toLowerCase()
-            .includes(searchedQuery.toLowerCase()) ||
-          job.description
-            .toLowerCase()
-            .includes(searchedQuery.toLowerCase()) ||
-          job.location
-            .toLowerCase()
-            .includes(searchedQuery.toLowerCase())
-        );
-      });
+        if (selectedFilter === "₹5 - ₹10 LPA") {
+            return salary >= 5 && salary <= 10;
+        }
 
-      setFilterJobs(filteredJobs);
-    } else {
-      setFilterJobs(allJobs);
-    }
-  }, [allJobs, searchedQuery]);
+        if (selectedFilter === "Above ₹10 LPA") {
+            return salary > 10;
+        }
+
+        if (
+            job.location
+                ?.toLowerCase()
+                .includes(selectedFilter.toLowerCase())
+        ) {
+            return true;
+        }
+
+        if (
+            job.title
+                ?.toLowerCase()
+                .includes(selectedFilter.toLowerCase())
+        ) {
+            return true;
+        }
+
+        return false;
+    });
+
+    setFilterJobs(filteredJobs);
+}, [allJobs, selectedFilter]);
+
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -70,7 +83,7 @@ const Jobs = () => {
               </div>
 
               <div className="p-4">
-                <FilterCard />
+                <FilterCard onFilterChange={setSelectedFilter} />
               </div>
             </div>
           </aside>
