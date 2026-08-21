@@ -67,7 +67,6 @@ const Navbar = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.log(error);
 
       toast.add({
         title: "Error",

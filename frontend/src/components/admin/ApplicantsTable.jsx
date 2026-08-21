@@ -157,8 +157,8 @@ const ApplicantsTable = () => {
 
                   {/* Date */}
                   <TableCell className="whitespace-nowrap text-slate-600">
-                    {item?.applicant?.createdAt
-                      ? item.applicant.createdAt.split("T")[0]
+                    {item?.createdAt
+                      ? item?.createdAt.split("T")[0]
                       : "N/A"}
                   </TableCell>
 

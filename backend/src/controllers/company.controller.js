@@ -105,7 +105,6 @@ export const getCompanyById = async (req, res) => {
 export const updateCompany = async (req, res) => {
     try {
         const { name, description, website, location } = req.body;
-        console.log(name, description, website, location)
         const file = req.file;
 
         // cloudinary
@@ -131,7 +130,6 @@ export const updateCompany = async (req, res) => {
         })
     }
     catch (error) {
-        console.log("UPDATE COMPANY ERROR:", error);
         return res.status(500).json({
             success: false,
             message: error.message

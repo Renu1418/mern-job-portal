@@ -7,7 +7,7 @@ import axios from 'axios';
 const useGetAllJobs = () => {
 
     const dispatch = useDispatch();
-    const {searchedQuery} = useSelector(store=>store.job);
+    const { searchedQuery } = useSelector(store => store.job);
 
     useEffect(() => {
         const fetchAllJobs = async () => {
@@ -17,7 +17,12 @@ const useGetAllJobs = () => {
                     dispatch(setAllJobs(res.data.jobs));
                 }
             } catch (error) {
-                console.log(error);
+                toast.add({
+                    title: "Error",
+                    description:
+                        error.response?.data?.message || "Something went wrong",
+                    type: "error",
+                });
             }
         }
         fetchAllJobs();

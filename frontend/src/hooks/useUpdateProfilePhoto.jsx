@@ -49,7 +49,6 @@ const useUpdateProfilePhoto = () => {
                 });
             }
         } catch (error) {
-            console.log(error);
 
             toast.add({
                 title: "Error",

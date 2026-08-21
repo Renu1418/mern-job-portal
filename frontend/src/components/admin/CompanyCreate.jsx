@@ -49,7 +49,6 @@ const CompanyCreate = () => {
         navigate(`/admin/companies/${companyId}`);
       }
     } catch (error) {
-      console.log(error);
 
       toast.add({
         title: "Unable to Create Company",

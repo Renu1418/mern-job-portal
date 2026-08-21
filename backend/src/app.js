@@ -8,6 +8,9 @@ import userRouter from "./routes/user.routes.js";
 import companyRouter from "./routes/company.routes.js";
 import jobRouter from "./routes/job.routes.js";
 import applicationRouter from "./routes/application.routes.js";
+
+
+
 const app = express();
 
 app.use(express.json());

@@ -100,9 +100,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         }, 150);
       }
     } catch (error) {
-      console.log(error);
-
-      // Close dialog first so toast is visible
+    // Close dialog first so toast is visible
       setOpen(false);
 
       setTimeout(() => {

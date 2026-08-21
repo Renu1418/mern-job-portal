@@ -92,7 +92,6 @@ const CompanySetup = () => {
         navigate("/admin/companies");
       }
     } catch (error) {
-      console.log(error);
 
       toast.add({
         title: "Update Failed",

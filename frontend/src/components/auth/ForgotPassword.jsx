@@ -46,8 +46,7 @@ const ForgotPassword = () => {
         });
       }
     } catch (error) {
-      console.log(error);
-
+     
       toast.add({
         title: "Error",
         description:

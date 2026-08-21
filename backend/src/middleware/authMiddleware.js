@@ -3,9 +3,7 @@ import blacklistModel from "../models/blacklistToken.model.js";
 
 export const authMiddleware = async (req, res, next) => {
     try {
-       console.log("COOKIE HEADER:", req.headers.cookie);
         const token = req.cookies.token;
-        console.log("TOKEN:", token);
 
         if (!token) {
             return res.status(401).json({

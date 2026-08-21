@@ -59,8 +59,7 @@ const JobSetup = () => {
           });
         }
       } catch (error) {
-        console.log(error);
-
+       
         toast.add({
           title: "Error",
           description:
@@ -98,8 +97,7 @@ const JobSetup = () => {
         navigate("/admin/jobs");
       }
     } catch (error) {
-      console.log(error);
-
+     
       toast.add({
         title: "Error",
         description:

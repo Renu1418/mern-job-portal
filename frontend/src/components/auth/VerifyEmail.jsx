@@ -51,7 +51,6 @@ const VerifyEmail = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.log(error);
 
       toast.add({
         title: "Error",
@@ -88,7 +87,6 @@ const VerifyEmail = () => {
         });
       }
     } catch (error) {
-      console.log(error);
 
       toast.add({
         title: "Error",

@@ -70,7 +70,10 @@ const register = async (req, res) => {
 
         }
         catch (error) {
-            console.error("failed to send verification email:", error);
+            return res.status(500).json({
+            success: false,
+            message: error.message
+        })
         }
 
         return res.status(201).json({

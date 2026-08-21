@@ -110,8 +110,7 @@ const AdminJobsTable = () => {
         setSelectedJob(null);
       }
     } catch (error) {
-      console.log(error);
-
+  
       toast.add({
         title: "Delete Failed",
         description:

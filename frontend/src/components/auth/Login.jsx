@@ -54,8 +54,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
-
+   
       // if Unverified user
       if (
         error.response?.data?.message ===

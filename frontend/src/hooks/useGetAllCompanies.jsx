@@ -16,7 +16,13 @@ const useGetAllCompanies = () => {
                     dispatch(setCompanies(res.data.companies));
                 }
             } catch (error) {
-                console.log(error);
+              
+                toast.add({
+                    title: "Error",
+                    description:
+                        error.response?.data?.message || "Something went wrong",
+                    type: "error",
+                });
             }
         }
         fetchCompanies();

@@ -58,7 +58,6 @@ const Signup = () => {
         });
       }
     } catch (error) {
-      console.log(error);
 
       toast.add({
         title: "Error",

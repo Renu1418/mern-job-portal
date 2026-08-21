@@ -28,7 +28,12 @@ const Applicants = () => {
 
         dispatch(setAllApplicants(res.data.job));
       } catch (error) {
-        console.log(error);
+        toast.add({
+          title: "Error",
+          description:
+            error.response?.data?.message || "Something went wrong",
+          type: "error",
+        });
       }
     };
 

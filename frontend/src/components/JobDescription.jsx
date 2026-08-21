@@ -64,8 +64,6 @@ const JobDescription = () => {
         });
       }
     } catch (error) {
-      console.log(error);
-
       toast.add({
         title: "Error",
         description:
@@ -93,7 +91,12 @@ const JobDescription = () => {
           );
         }
       } catch (error) {
-        console.log(error);
+        toast.add({
+                  title: "Error",
+                  description:
+                    error.response?.data?.message || "Something went wrong",
+                  type: "error",
+                });
       }
     };
 
