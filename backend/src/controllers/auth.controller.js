@@ -223,7 +223,7 @@ const login = async (req, res) => {
             role: user.role
         }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
-        res.status(200).cookie("token", token, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'strict' }).json({
+        res.status(200).cookie("token", token, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"}).json({
             success: true,
             message: "Logged in successfully",
             user: {
@@ -381,7 +381,7 @@ const logout = async (req, res) => {
         res.clearCookie("token", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict"
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
         });
 
         return res.status(200).json({
