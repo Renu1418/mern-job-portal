@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 // fromtemd-backend cors configuration
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "https://mern-job-portal-frontend.onrender.com"],
   credentials: true,
 };
 app.use(cors(corsOptions));
