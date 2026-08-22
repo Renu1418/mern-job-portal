@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAllApplicants } from "@/redux/applicationSlice";
 import { ArrowLeft, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "../ui/toast";
 
 const Applicants = () => {
   const params = useParams();
