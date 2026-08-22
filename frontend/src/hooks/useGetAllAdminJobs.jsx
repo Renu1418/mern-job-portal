@@ -3,7 +3,7 @@ import { JOB_API_END_POINT } from '@/utils/constant'
 import { useDispatch } from 'react-redux'
 import { setAllAdminJobs } from '@/redux/jobSlice';
 import axios from 'axios';
-import { toast } from "../ui/toast";
+import { toast } from "../components/ui/toast";
 
 const useGetAllAdminJobs = () => {
 

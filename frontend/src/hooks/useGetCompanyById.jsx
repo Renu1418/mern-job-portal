@@ -3,7 +3,7 @@ import { COMPANY_API_END_POINT } from '@/utils/constant'
 import { useDispatch } from 'react-redux'
 import { setAllJobs } from '@/redux/jobSlice';
 import axios from 'axios';
-import { toast } from "../ui/toast";
+import { toast } from "../components/ui/toast";
 import { setSingleCompany } from '@/redux/companySlice';
 
 const useGetCompanyById = (companyId) => {
